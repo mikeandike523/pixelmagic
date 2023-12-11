@@ -10,10 +10,15 @@ import numpy as np
 Image.MAX_IMAGE_PIXELS = None
 
 INTERPOLATION_CHOICES=['area', 'cubic', 'linear']
+CV2_INTERPOLATION_CHOICES = {
+    'area': cv2.INTER_AREA,
+    'cubic': cv2.INTER_CUBIC,
+    'linear': cv2.INTER_LINEAR
+}
 def get_cv2_interpolation(interpolation):
     if interpolation.lower() not in INTERPOLATION_CHOICES:
         raise Exception("Interpolation must be one of the following: {}".format(INTERPOLATION_CHOICES))
-    return interpolation.lower()
+    return CV2_INTERPOLATION_CHOICES[interpolation.lower()]
 
 def is_whole(num):
     return round(num) == num
@@ -83,9 +88,9 @@ def unsafe_resize(i, o, factor_x, factor_y, factor_xy, interpolation):
 @click.command()
 @click.option('--input', default=None, type=str, help='Path to the input file')
 @click.option('--output', default=None, type=str, help='Path to the output file')
-@click.option('--factor-x', default=None, type=int, help='Factor to resize the image by in the x direction')
-@click.option('--factor-y', default=None, type=int, help='Factor to resize the image by in the y direction')
-@click.option('--factor-xy', default=None, type=int, help='Factor to resize the image by (equally) in both directions')
+@click.option('--factor-x', default=None, type=float, help='Factor to resize the image by in the x direction')
+@click.option('--factor-y', default=None, type=float, help='Factor to resize the image by in the y direction')
+@click.option('--factor-xy', default=None, type=float, help='Factor to resize the image by (equally) in both directions')
 @click.option("--interp", default="linear", type=click.Choice(INTERPOLATION_CHOICES), help="Interpolation method to use. Defaults to 'linear'.")
 @click.option('--verbose', '-v', is_flag=True, default=False, help='Verbose output')
 def resize(input, output, factor_x, factor_y, factor_xy, interp, verbose=False):
