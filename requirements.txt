@@ -1,0 +1,5 @@
+opencv-python
+click
+termcolor
+pillow
+numpy

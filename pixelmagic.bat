@@ -1,0 +1,1 @@
+%~dp0__python.bat %~dp0pixelmagic.py %*
