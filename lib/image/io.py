@@ -4,15 +4,15 @@ import numpy as np
 class ImagePixelData:
     def __init__(self, pixels: np.ndarray):
         if pixels.dtype != np.uint8:
-            raise Exception("Only uint8 images are supported")
-        if np.any(np.round(pixels)!= pixels):
-            raise Exception("Only uint8 images are supported")
-        if np.any(pixels < 0) or np.any(pixels >= 255):
-            raise Exception("Only uint8 images are supported")
+            raise Exception(f"Only uint8 images are supported, {pixels.dtype} is not supported")
+        if np.any(np.round(pixels.astype(float))!= pixels):
+            raise Exception("Only uint8 images are supported. Found non-integer values")
+        if np.any(pixels < 0) or np.any(pixels > 255):
+            raise Exception("Only uint8 images are supported, found values outside of the range of 0-255")
         if pixels.ndim not in [2, 3]:
-            raise Exception("Only L, RGB, and RGBA images are supported")
+            raise Exception("Only L, RGB, and RGBA images are supported, found {pixels.ndim} dimensions")
         if pixels.ndim == 3 and pixels.shape[-1] not in [1, 3, 4]:
-            raise Exception("Only L, RGB, and RGBA images are supported")
+            raise Exception("Only L, RGB, and RGBA images are supported, found {pixels.ndim} dimensions with {pixels.shape[-1]} channels")
         if pixels.ndim == 2:
             pixels = np.expand_dims(pixels, axis=-1)
             self.initial_mode="L"
@@ -43,4 +43,7 @@ class ImagePixelData:
 
     @classmethod
     def load(cls, path: str) -> "ImagePixelData":
-        return cls(np.array(Image.open(path)))
+        pil_image = Image.open(path)
+        if pil_image.mode not in ["L", "RGB", "RGBA"]:
+            raise Exception(f"Only L, RGB, and RGBA images are supported, {pil_image.mode} is not supported")
+        return cls(np.asarray(pil_image))
