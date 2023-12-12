@@ -6,12 +6,6 @@ import numpy as np
 
 from lib.image.io import ImagePixelData
 
-@click.command()
-@click.option('--input', default=None, type=str, help='Path to the input image')
-@click.option('--output', default=None, type=str, help='Path to the output image')
-@click.option('--mask', default=None, type=str, help='Path to the mask image')
-@click.option('--verbose', '-v', is_flag=True, default=False, help='Verbose output')
-
 def unsafe_apply_mask(input, output, mask):
     input_data = ImagePixelData.load(input)
     mask_data = ImagePixelData.load(mask)
@@ -46,6 +40,10 @@ def unsafe_apply_mask(input, output, mask):
     masked_data.save(output)
 
 @click.command()
+@click.option('--input', default=None, type=str, help='Path to the input image')
+@click.option('--output', default=None, type=str, help='Path to the output image')
+@click.option('--mask', default=None, type=str, help='Path to the mask image')
+@click.option('--verbose', '-v', is_flag=True, default=False, help='Verbose output')
 def apply_mask(input, output, mask, verbose=False):
     """
     @todo
