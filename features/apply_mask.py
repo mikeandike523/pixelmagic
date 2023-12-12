@@ -45,7 +45,7 @@ def unsafe_apply_mask(input, output, mask):
     masked_data = ImagePixelData(masked_pixels)
     masked_data.save(output)
 
-
+@click.command()
 def apply_mask(input, output, mask, verbose=False):
     """
     @todo
