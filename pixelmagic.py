@@ -5,6 +5,7 @@ import click
 
 from features.resize import resize
 from features.apply_mask import apply_mask
+from features.binarize_by_lightness import binarize_by_lightness
 
 @click.group()
 def cli():
@@ -14,6 +15,7 @@ def cli():
 
 cli.add_command(resize)
 cli.add_command(apply_mask)
+cli.add_command(binarize_by_lightness)
 
 if __name__ == '__main__':
     cli()

@@ -24,6 +24,48 @@ class ImagePixelData:
             self.initial_mode="RGBA"
         self.pixels = pixels
 
+    def to_rgba(self) -> "ImagePixelData":
+        self.initial_mode = "RGBA"
+        if self.pixels.shape[-1] == 1:
+            L = self.pixels[:,:,0]
+            self.pixels = np.dstack((L, L, L, np.full_like(L, 255)))
+        if self.pixels.shape[-1] == 3:
+            R = self.pixels[:,:,0]
+            G = self.pixels[:,:,1]
+            B = self.pixels[:,:,2]
+            self.pixels = np.dstack((R, G, B, np.full_like(R, 255)))
+        return self    
+
+    def to_rgb(self) -> "ImagePixelData":
+        self.initial_mode = "RGB"
+        if self.pixels.shape[-1] == 1:
+            L = self.pixels[:,:,0]
+            self.pixels = np.dstack((L, L, L))
+        if self.pixels.shape[-1] == 4:
+            R = self.pixels[:,:,0]
+            G = self.pixels[:,:,1]
+            B = self.pixels[:,:,2]
+            self.pixels = np.dstack((R, G, B))
+        return self    
+
+    def to_l(self) -> "ImagePixelData":
+        self.initial_mode = "L"
+        if self.pixels.shape[-1] == 3:
+            R = self.pixels[:,:,0].astype(float)
+            G = self.pixels[:,:,1].astype(float)
+            B = self.pixels[:,:,2].astype(float)
+            mean_rgb = np.mean(np.dstack((R, G, B)), axis=-1).astype(np.uint8)
+            self.pixels = np.dstack((mean_rgb,))
+        if self.pixels.shape[-1] == 4:
+            R = self.pixels[:,:,0].astype(float)
+            G = self.pixels[:,:,1].astype(float)
+            B = self.pixels[:,:,2].astype(float)
+            A = self.pixels[:,:,3].astype(float)
+            mean_rgb = np.mean(np.dstack((R, G, B)), axis=-1)
+            scale_factor = np.divide(A, 255)
+            scaled_pixels = np.multiply(mean_rgb, scale_factor)
+            scaled_pixels_uint8 = scaled_pixels.astype(np.uint8)
+            self.pixelsspace = np.dstack((scaled_pixels_uint8,))
 
     def get_pixels(self) -> np.ndarray:
         return self.pixels
