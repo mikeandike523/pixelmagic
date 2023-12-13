@@ -65,7 +65,8 @@ class ImagePixelData:
             scale_factor = np.divide(A, 255)
             scaled_pixels = np.multiply(mean_rgb, scale_factor)
             scaled_pixels_uint8 = scaled_pixels.astype(np.uint8)
-            self.pixelsspace = np.dstack((scaled_pixels_uint8,))
+            self.pixels = np.dstack((scaled_pixels_uint8,))
+        return self
 
     def get_pixels(self) -> np.ndarray:
         return self.pixels
@@ -81,7 +82,10 @@ class ImagePixelData:
         return self
     
     def save(self, path: str) -> None:
-        Image.fromarray(self.pixels).save(path)
+        pixels = self.pixels
+        if self.pixels.shape[-1] == 1:
+            pixels = self.pixels[:,:,0]
+        Image.fromarray(pixels).save(path, mode=self.initial_mode)
 
     @classmethod
     def load(cls, path: str) -> "ImagePixelData":
